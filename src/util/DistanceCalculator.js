@@ -19,7 +19,7 @@ export function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
         ;
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c; // Distance in km
-    return d;
+    return Math.floor(d);
 }
 
 function latLonToXY(latitude, longitude) {
@@ -53,11 +53,11 @@ export function getBearingFromLatLon(lat1, lon1, lat2, lon2) {
     // Calculate the angle between the two countries
     var radians = Math.atan2(y2 - y1, x2 - x1); // in radians
     var compassReading = radians * (180 / Math.PI); // in degrees [-180, 180], 0 is East
-    if (compassReading < 0) {   // in degreed [0, 360], 0 is East
+    if (compassReading < 0) {   // in degrees [0, 360], 0 is East
         compassReading += 360;
     }
     
     var coordIndex = Math.round(compassReading / 45);
 
-    return coordNames[coordIndex];
+    return Math.round(compassReading);
 }

@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
 
-import { Autocomplete, Button, List, ListItem, ListItemAvatar, ListItemText, Popper, Stack } from '@mui/material';
+import { Autocomplete, Button, Dialog, DialogContent, DialogContentText, DialogTitle, List, ListItem, ListItemAvatar, ListItemText, Popper, Stack } from '@mui/material';
 import { TextField } from '@mui/material';
 import { Box } from '@mui/system';
-import { South } from '@mui/icons-material';
+import { East, North, NorthEast, NorthWest, South, SouthEast, SouthWest, West } from '@mui/icons-material';
 
-import { countryList } from '../data/CountryList'
+import { countriesWithFlags, countryList } from '../data/CountryList'
 import { gameNumber } from '../util/GameNumber';
+import { getBearingFromLatLon, getDistanceFromLatLonInKm } from '../util/DistanceCalculator';
 
 // The country to guess
-const country = countryList[64];
+const country = countriesWithFlags[gameNumber];
 
 function Flag() {
     return (
@@ -29,17 +30,35 @@ export default function GuessFlag() {
 
     const [guesses, setGuesses] = useState([]);
     const [guessInput, setGuessInput] = useState();
+    const [openVictoryAlert, setOpenVictoryAlert] = useState(false);
 
     function Input() {
         const PopperMy = function (props) {
-            return (<Popper {...props} placement='top' />)
+            return (<Popper {...props} placement='top' style={{ width: '400px' }} />)
         }
 
         function onPressGuess() {
+            // Calculate distance and bearing
+            let distance = getDistanceFromLatLonInKm(guessInput.lat, guessInput.lon, country.lat, country.lon);
+            let bearing = getBearingFromLatLon(guessInput.lat, guessInput.lon, country.lat, country.lon);
+
+            // Register attempt
             setGuesses((previousGuesses) => [
-                guessInput,
+                {
+                    ...guessInput,
+                    distance,
+                    bearing
+                },
                 ...previousGuesses
             ]);
+
+            // Process victory
+            if (guessInput.code === country.code) {
+                setOpenVictoryAlert(true);
+            }
+
+            // Clean up
+            setGuessInput();
         }
 
         return (
@@ -58,7 +77,7 @@ export default function GuessFlag() {
                     value={guessInput}
                     onChange={(event, newInput) => setGuessInput(newInput)}
                 />
-                <Button variant='contained' disableElevation
+                <Button variant='outlined' 
                     onClick={onPressGuess}
                 >
                     Guess
@@ -68,6 +87,9 @@ export default function GuessFlag() {
     }
 
     function Guesses() {
+        const bearingIcons = [<East />, <SouthEast />, <South />, <SouthWest />,
+        <West />, <NorthWest />, <North />, <NorthEast />, <East />];
+
         return (
             <List
                 sx={{
@@ -78,19 +100,19 @@ export default function GuessFlag() {
                 {guesses.map((guess, index) =>
                     <ListItem key={index}>
                         <ListItemAvatar>
+                            {bearingIcons[Math.round(guess.bearing / 45)]}
+                        </ListItemAvatar>
+                        <ListItemAvatar>
                             <Box
                                 component={"img"}
                                 src={"https://flagcdn.com/20x15/" + guess.code.toLowerCase() + ".png"}
                                 alt="guessFlagIcon"
                             />
                         </ListItemAvatar>
-                        <ListItemAvatar>
-                            <South />
-                        </ListItemAvatar>
                         <ListItemText
                             sx={{ display: 'inline' }}
                             primary={guess.name}
-                            secondary={Math.floor(Math.random() * 25000) + " km"}
+                            secondary={guess.distance + " km"}
                         >
                         </ListItemText>
                     </ListItem>
@@ -98,6 +120,11 @@ export default function GuessFlag() {
             </List>
         );
     }
+
+    const onCloseVictoryAlert = () => {
+        setOpenVictoryAlert(false);
+        window.location.reload(false);
+    };
 
     return (
         <Stack
@@ -115,6 +142,23 @@ export default function GuessFlag() {
             <Flag />
             <Guesses guesses={guesses} />
             <Input guesses={guesses} />
+
+            {/* Alert */}
+            <Dialog
+                open={openVictoryAlert}
+                onClose={onCloseVictoryAlert}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Well done!"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        You got it right, it's {country.name}! For now that's it. I'm still working on further logic. Stay tuned.
+                    </DialogContentText>
+                </DialogContent>
+            </Dialog>
         </Stack>
     )
 }
