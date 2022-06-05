@@ -10,16 +10,7 @@ import GuessFlagRoute from './routes/GuessFlagRoute';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />}>
-          <Route path="/level1" element={<GuessFlagRoute />} />
-          <Route path="/level2" element={<GuessCapitalRoute />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  </React.StrictMode>
+  <App />
 );
 
 // If you want to start measuring performance in your app, pass a function
