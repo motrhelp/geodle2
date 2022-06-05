@@ -1,28 +1,28 @@
 {
   "files": {
-    "main.css": "/geodle2/static/css/main.073c9b0a.css",
-    "main.js": "/geodle2/static/js/main.bf35b1e4.js",
-    "static/js/787.575bedc7.chunk.js": "/geodle2/static/js/787.575bedc7.chunk.js",
-    "static/media/greece.png": "/geodle2/static/media/greece.9d4965f8ce75a6f6203e.png",
-    "static/media/denmark.png": "/geodle2/static/media/denmark.d3c66f70ffb1d5d74052.png",
-    "static/media/croatia.png": "/geodle2/static/media/croatia.ec759572f4e50d1bb4f8.png",
-    "static/media/netherlands.png": "/geodle2/static/media/netherlands.580c35caa961685031a2.png",
-    "static/media/iceland.png": "/geodle2/static/media/iceland.1f89294f73437198bd62.png",
-    "static/media/canada.png": "/geodle2/static/media/canada.903f48bf36eb203f94f9.png",
-    "static/media/australia.png": "/geodle2/static/media/australia.77ded853afa8cc1ceec4.png",
-    "static/media/hong-kong.png": "/geodle2/static/media/hong-kong.32c75c5110568c69993d.png",
-    "static/media/united-kingdom.png": "/geodle2/static/media/united-kingdom.90415c18d1903a2fcd25.png",
-    "static/media/monaco.png": "/geodle2/static/media/monaco.1f9434a2b29d7b9c3a31.png",
-    "static/media/russia.png": "/geodle2/static/media/russia.8abaa006492a67480d73.png",
-    "static/media/luxembourg.png": "/geodle2/static/media/luxembourg.36c396539043efa33d72.png",
-    "static/media/belarus.png": "/geodle2/static/media/belarus.5d69029024412131913e.png",
-    "index.html": "/geodle2/index.html",
-    "main.073c9b0a.css.map": "/geodle2/static/css/main.073c9b0a.css.map",
-    "main.bf35b1e4.js.map": "/geodle2/static/js/main.bf35b1e4.js.map",
-    "787.575bedc7.chunk.js.map": "/geodle2/static/js/787.575bedc7.chunk.js.map"
+    "main.css": "/static/css/main.073c9b0a.css",
+    "main.js": "/static/js/main.a0e12e04.js",
+    "static/js/787.575bedc7.chunk.js": "/static/js/787.575bedc7.chunk.js",
+    "static/media/greece.png": "/static/media/greece.9d4965f8ce75a6f6203e.png",
+    "static/media/denmark.png": "/static/media/denmark.d3c66f70ffb1d5d74052.png",
+    "static/media/croatia.png": "/static/media/croatia.ec759572f4e50d1bb4f8.png",
+    "static/media/netherlands.png": "/static/media/netherlands.580c35caa961685031a2.png",
+    "static/media/iceland.png": "/static/media/iceland.1f89294f73437198bd62.png",
+    "static/media/canada.png": "/static/media/canada.903f48bf36eb203f94f9.png",
+    "static/media/australia.png": "/static/media/australia.77ded853afa8cc1ceec4.png",
+    "static/media/hong-kong.png": "/static/media/hong-kong.32c75c5110568c69993d.png",
+    "static/media/united-kingdom.png": "/static/media/united-kingdom.90415c18d1903a2fcd25.png",
+    "static/media/monaco.png": "/static/media/monaco.1f9434a2b29d7b9c3a31.png",
+    "static/media/russia.png": "/static/media/russia.8abaa006492a67480d73.png",
+    "static/media/luxembourg.png": "/static/media/luxembourg.36c396539043efa33d72.png",
+    "static/media/belarus.png": "/static/media/belarus.5d69029024412131913e.png",
+    "index.html": "/index.html",
+    "main.073c9b0a.css.map": "/static/css/main.073c9b0a.css.map",
+    "main.a0e12e04.js.map": "/static/js/main.a0e12e04.js.map",
+    "787.575bedc7.chunk.js.map": "/static/js/787.575bedc7.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.073c9b0a.css",
-    "static/js/main.bf35b1e4.js"
+    "static/js/main.a0e12e04.js"
   ]
 }
