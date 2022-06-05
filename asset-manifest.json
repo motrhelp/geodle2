@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/geodle2/static/css/main.073c9b0a.css",
-    "main.js": "/geodle2/static/js/main.cecfa0c1.js",
+    "main.js": "/geodle2/static/js/main.bf35b1e4.js",
     "static/js/787.575bedc7.chunk.js": "/geodle2/static/js/787.575bedc7.chunk.js",
     "static/media/greece.png": "/geodle2/static/media/greece.9d4965f8ce75a6f6203e.png",
     "static/media/denmark.png": "/geodle2/static/media/denmark.d3c66f70ffb1d5d74052.png",
@@ -18,11 +18,11 @@
     "static/media/belarus.png": "/geodle2/static/media/belarus.5d69029024412131913e.png",
     "index.html": "/geodle2/index.html",
     "main.073c9b0a.css.map": "/geodle2/static/css/main.073c9b0a.css.map",
-    "main.cecfa0c1.js.map": "/geodle2/static/js/main.cecfa0c1.js.map",
+    "main.bf35b1e4.js.map": "/geodle2/static/js/main.bf35b1e4.js.map",
     "787.575bedc7.chunk.js.map": "/geodle2/static/js/787.575bedc7.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.073c9b0a.css",
-    "static/js/main.cecfa0c1.js"
+    "static/js/main.bf35b1e4.js"
   ]
 }
