@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 
-import { Autocomplete, Button, Dialog, DialogContent, DialogContentText, DialogTitle, List, ListItem, ListItemAvatar, ListItemText, Popper, Stack } from '@mui/material';
+import { AppBar, Autocomplete, Button, Dialog, DialogContent, DialogContentText, DialogTitle, IconButton, List, ListItem, ListItemAvatar, ListItemText, Paper, Popper, Stack, Toolbar, Typography } from '@mui/material';
 import { TextField } from '@mui/material';
 import { Box } from '@mui/system';
-import { East, North, NorthEast, NorthWest, South, SouthEast, SouthWest, West } from '@mui/icons-material';
+import { ArrowBackIos, ArrowForwardIos, East, North, NorthEast, NorthWest, South, SouthEast, SouthWest, West } from '@mui/icons-material';
 
 import { countriesWithFlags, countryList } from '../data/CountryList'
 import { gameNumber } from '../util/GameNumber';
@@ -14,14 +14,17 @@ const country = countriesWithFlags[gameNumber];
 
 function Flag() {
     return (
-        <Box
-            component="img"
-            src={"https://flagcdn.com/" + country.code.toLowerCase() + ".svg"}
-            alt="flag"
-            width={'99%'}
-            maxWidth={'400px'}
-            border={1}
-        />
+        <Paper justifyContent='center' elevation={3}>
+            <Box
+                component="img"
+                src={"https://flagcdn.com/" + country.code.toLowerCase() + ".svg"}
+                alt="flag"
+                width={'96%'}
+                maxWidth={'400px'}
+                py={1}
+                px={1}
+            />
+        </Paper>
     )
 }
 
@@ -73,11 +76,13 @@ export default function GuessFlag() {
                     sx={{
                         width: 260
                     }}
+                    // color="primary"
                     PopperComponent={PopperMy}
                     value={guessInput}
                     onChange={(event, newInput) => setGuessInput(newInput)}
                 />
-                <Button variant='outlined' 
+                <Button
+                    variant='outlined'
                     onClick={onPressGuess}
                 >
                     Guess
@@ -94,8 +99,10 @@ export default function GuessFlag() {
             <List
                 sx={{
                     maxHeight: '250px',
+                    minHeight: '150px',
                     overflow: 'auto'
                 }}
+                dense
             >
                 {guesses.map((guess, index) =>
                     <ListItem key={index}>
@@ -121,6 +128,14 @@ export default function GuessFlag() {
         );
     }
 
+    function Hint() {
+        return (
+            <Typography variant="h6">
+                Can you guess the country by its flag?
+            </Typography>
+        )
+    }
+
     const onCloseVictoryAlert = () => {
         setOpenVictoryAlert(false);
         window.location.reload(false);
@@ -139,8 +154,43 @@ export default function GuessFlag() {
                 minHeight: '-webkit-fill-available',
             }}
         >
+
+            <AppBar position="static">
+                <Toolbar >
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        sx={{ mr: 2 }}
+                    >
+                        <ArrowBackIos />
+                    </IconButton>
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                        GEODLE
+                    </Typography>
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                        Level 1
+                    </Typography>
+                    <IconButton
+                        edge="end"
+                        color="inherit"
+                        sx={{ mr: 2 }}
+                    >
+                        <ArrowForwardIos />
+                    </IconButton>
+                </Toolbar>
+            </AppBar>
+
             <Flag />
+
+            {guesses.length < 3 ?
+                <Hint />
+                :
+                null
+            }
+
             <Guesses guesses={guesses} />
+
             <Input guesses={guesses} />
 
             {/* Alert */}
