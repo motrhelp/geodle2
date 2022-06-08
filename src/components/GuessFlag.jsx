@@ -2,27 +2,32 @@ import React, { useState } from 'react'
 
 import { AppBar, Autocomplete, Button, Dialog, DialogContent, DialogContentText, DialogTitle, IconButton, List, ListItem, ListItemAvatar, ListItemText, Paper, Popper, Stack, Toolbar, Typography } from '@mui/material';
 import { TextField } from '@mui/material';
-import { Box } from '@mui/system';
-import { ArrowBackIos, ArrowForwardIos, East, North, NorthEast, NorthWest, South, SouthEast, SouthWest, West } from '@mui/icons-material';
+import { Box, textAlign } from '@mui/system';
+import { ArrowBackIos, ArrowForwardIos, East, North, NorthEast, NorthWest, ShareLocation, South, SouthEast, SouthWest, West } from '@mui/icons-material';
+import PublicIcon from '@mui/icons-material/Public';
+import ShareIcon from '@mui/icons-material/Share';
+import CheckIcon from '@mui/icons-material/Check';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 import { countriesWithFlags, countryList } from '../data/CountryList'
 import { gameNumber } from '../util/GameNumber';
 import { getBearingFromLatLon, getDistanceFromLatLonInKm } from '../util/DistanceCalculator';
+import dist from 'react-scrollable-list';
 
 // The country to guess
 const country = countriesWithFlags[gameNumber];
 
 function Flag() {
     return (
-        <Paper justifyContent='center' elevation={3}>
+        <Paper justifyContent='center' elevation={1} >
             <Box
                 component="img"
                 src={"https://flagcdn.com/" + country.code.toLowerCase() + ".svg"}
                 alt="flag"
-                width={'96%'}
+                width={'100%'}
                 maxWidth={'400px'}
-                py={1}
                 px={1}
+                pt={1}
             />
         </Paper>
     )
@@ -33,11 +38,11 @@ export default function GuessFlag() {
 
     const [guesses, setGuesses] = useState([]);
     const [guessInput, setGuessInput] = useState();
-    const [openVictoryAlert, setOpenVictoryAlert] = useState(false);
+    const [victory, setVictory] = useState(false);
 
     function Input() {
         const PopperMy = function (props) {
-            return (<Popper {...props} placement='top' style={{ width: '400px' }} />)
+            return (<Popper {...props} placement='top' style={{ width: '1' }} />)
         }
 
         function onPressGuess() {
@@ -57,7 +62,7 @@ export default function GuessFlag() {
 
             // Process victory
             if (guessInput.code === country.code) {
-                setOpenVictoryAlert(true);
+                setVictory(true);
             }
 
             // Clean up
@@ -76,7 +81,6 @@ export default function GuessFlag() {
                     sx={{
                         width: 260
                     }}
-                    // color="primary"
                     PopperComponent={PopperMy}
                     value={guessInput}
                     onChange={(event, newInput) => setGuessInput(newInput)}
@@ -95,6 +99,14 @@ export default function GuessFlag() {
         const bearingIcons = [<East />, <SouthEast />, <South />, <SouthWest />,
         <West />, <NorthWest />, <North />, <NorthEast />, <East />];
 
+        function getBearingIcon(bearing, distance) {
+            if (distance > 0) {
+                return bearingIcons[Math.round(bearing / 45)];
+            } else {
+                return <CheckIcon />
+            }
+        }
+
         return (
             <List
                 sx={{
@@ -107,7 +119,7 @@ export default function GuessFlag() {
                 {guesses.map((guess, index) =>
                     <ListItem key={index}>
                         <ListItemAvatar>
-                            {bearingIcons[Math.round(guess.bearing / 45)]}
+                            {getBearingIcon(guess.bearing, guess.distance)}
                         </ListItemAvatar>
                         <ListItemAvatar>
                             <Box
@@ -136,8 +148,31 @@ export default function GuessFlag() {
         )
     }
 
-    const onCloseVictoryAlert = () => {
-        setOpenVictoryAlert(false);
+    function EndGameBar() {
+        return (
+            <AppBar position='static' sx={{ top: 'auto', bottom: 0 }}>
+                <Toolbar>
+                    <IconButton
+                        color="inherit"
+                    >
+                        <PublicIcon />
+                    </IconButton>
+                    <Typography variant="h6" component="div" sx={{
+                        flexGrow: 1,
+                        textAlign: 'center'
+                    }}>
+                        VICTORY
+                    </Typography>
+                    <IconButton
+                        color="inherit">
+                        <ShareIcon />
+                    </IconButton>
+                </Toolbar>
+            </AppBar>
+        )
+    }
+
+    const onClickRefresh = () => {
         window.location.reload(false);
     };
 
@@ -171,10 +206,18 @@ export default function GuessFlag() {
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         Level 1
                     </Typography>
+                    {victory ?
+                        <IconButton
+                            color='inherit'
+                            onClick={onClickRefresh}
+                        >
+                            <RefreshIcon />
+                        </IconButton>
+                        : null
+                    }
                     <IconButton
                         edge="end"
                         color="inherit"
-                        sx={{ mr: 2 }}
                     >
                         <ArrowForwardIos />
                     </IconButton>
@@ -191,24 +234,11 @@ export default function GuessFlag() {
 
             <Guesses guesses={guesses} />
 
-            <Input guesses={guesses} />
-
-            {/* Alert */}
-            <Dialog
-                open={openVictoryAlert}
-                onClose={onCloseVictoryAlert}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">
-                    {"Well done!"}
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        You got it right, it's {country.name}! For now that's it. I'm still working on further logic. Stay tuned.
-                    </DialogContentText>
-                </DialogContent>
-            </Dialog>
+            {victory ?
+                <EndGameBar />
+                :
+                <Input guesses={guesses} />
+            }
         </Stack>
     )
 }

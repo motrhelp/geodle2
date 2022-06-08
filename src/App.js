@@ -1,7 +1,8 @@
+import { CssBaseline } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import GuessFlag from './components/GuessFlag'
 
-const darkTheme = createTheme({
+const blackAndWhiteTheme = createTheme({
   palette: {
     type: 'light',
     primary: {
@@ -16,7 +17,8 @@ const darkTheme = createTheme({
 
 function App() {
   return (
-    <ThemeProvider theme={darkTheme} >
+    <ThemeProvider theme={blackAndWhiteTheme} >
+      <CssBaseline enableColorScheme />
       <GuessFlag />
     </ThemeProvider>
   );
