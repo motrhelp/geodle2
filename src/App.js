@@ -1,5 +1,6 @@
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import GuessCountryMapScreen from './components/GuessCountryMapScreen';
 import GuessFlagScreen from './components/GuessFlagScreen'
 import { countriesWithFlags } from './data/CountryList';
 import { gameNumber } from './util/GameNumber'
@@ -23,7 +24,8 @@ function App() {
   return (
     <ThemeProvider theme={blackAndWhiteTheme} >
       <CssBaseline enableColorScheme />
-      <GuessFlagScreen country={country} />
+      {/* <GuessFlagScreen country={country} /> */}
+      <GuessCountryMapScreen country={country}/>
     </ThemeProvider>
   );
 }
