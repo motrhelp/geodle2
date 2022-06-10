@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import { Snackbar, Stack, Button, Alert } from '@mui/material';
+import { Snackbar, Stack, Button, Alert, AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import TopBar from './common/TopBar';
 import BottomBar from './common/BottomBar';
 import Geocode from "react-geocode";
 import { getBearingFromLatLon, getDistanceFromLatLonInKm } from '../util/DistanceCalculator';
+import CheckIcon from '@mui/icons-material/Check';
+
 
 const apiKey = "AIzaSyAC4obA_8hVx_SAzfc4V0Hn9LgIlfbha6w";
 
@@ -197,7 +199,6 @@ export default function GuessCountryMapScreen({ country, previousLevel, nextLeve
         <Stack
             justifyContent="space-between"
             alignItems="center"
-            // spacing={1}
             sx={{
                 height: '100vh',
 
@@ -207,7 +208,8 @@ export default function GuessCountryMapScreen({ country, previousLevel, nextLeve
             }}
             dispay='flex'
         >
-            <TopBar title="Level 2" previousLevel={previousLevel} nextLevel={nextLevel}/>
+            <TopBar title="Level 2" previousLevel={previousLevel} nextLevel={nextLevel} />
+
             <LoadScript
                 googleMapsApiKey={apiKey}
             >
@@ -229,29 +231,8 @@ export default function GuessCountryMapScreen({ country, previousLevel, nextLeve
                     }
                 </GoogleMap>
             </LoadScript>
-            <Snackbar
-                open={showConfirmation && !showSuccess}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                autoHideDuration={6000}
-                message={"Are you sure this is " + country.name + "?"}
-                action={
-                    <Button
-                        onClick={onClickYes}
-                    >
-                        YES
-                    </Button>
-                }
-            />
-
-            <Snackbar
-                open={!showConfirmation && !showSuccess}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                autoHideDuration={6000}
-                message={"Can you point " + country.name + " on the map?"}
-            />
 
             <Snackbar open={showSuccess}
-                autoHideDuration={6000}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 sx={{ paddingTop: 10 }}
             >
@@ -271,10 +252,33 @@ export default function GuessCountryMapScreen({ country, previousLevel, nextLeve
                 </Alert>
             </Snackbar>
 
-            {
-                victory ?
-                    <BottomBar />
-                    : null
+            {victory ?
+                <BottomBar />
+                :
+                <AppBar position='static'>
+                    <Toolbar
+                        onClick={onClickYes}
+                    >
+                        <Typography variant="h6" component="div"
+                            sx={{
+                                flexGrow: 1,
+                                textAlign: 'center'
+                            }}>
+                            {showConfirmation ?
+                                "Confirm guess"
+                                :
+                                "Can you point " + country.name + " on the map?"
+                            }
+                        </Typography>
+                        {showConfirmation ?
+                            <IconButton
+                                color="inherit">
+                                <CheckIcon />
+                            </IconButton>
+                            : null
+                        }
+                    </Toolbar>
+                </AppBar>
             }
 
         </Stack >
