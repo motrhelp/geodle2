@@ -1,11 +1,24 @@
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { useState } from 'react';
 import GuessCountryMapScreen from './components/GuessCountryMapScreen';
 import GuessFlagScreen from './components/GuessFlagScreen'
 import { countriesWithFlags } from './data/CountryList';
 import { gameNumber } from './util/GameNumber'
 
 function App() {
+
+  const [level, setLevel] = useState(1);
+
+  function nextLevel() {
+    setLevel(level + 1);
+  }
+
+  function previousLevel() {
+    setLevel(level - 1);
+  }
+
+  // Color theme
   const blackAndWhiteTheme = createTheme({
     palette: {
       type: 'light',
@@ -24,8 +37,12 @@ function App() {
   return (
     <ThemeProvider theme={blackAndWhiteTheme} >
       <CssBaseline enableColorScheme />
-      {/* <GuessFlagScreen country={country} /> */}
-      <GuessCountryMapScreen country={country}/>
+      {level == 1 ?
+        <GuessFlagScreen country={country} nextLevel={nextLevel} />
+        : level == 2 ?
+          <GuessCountryMapScreen country={country} previousLevel={previousLevel}/>
+          : null
+      }
     </ThemeProvider>
   );
 }
