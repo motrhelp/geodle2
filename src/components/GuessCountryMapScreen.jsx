@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import { Snackbar, Stack, Button, Alert, AppBar, Toolbar, Typography, IconButton } from '@mui/material';
+import { Stack } from '@mui/material';
 import TopBar from './common/TopBar';
 import BottomBar from './common/BottomBar';
 import Geocode from "react-geocode";
-import { getBearingFromLatLon, getDistanceFromLatLonInKm } from '../util/DistanceCalculator';
-import CheckIcon from '@mui/icons-material/Check';
-
-
-const apiKey = "AIzaSyAC4obA_8hVx_SAzfc4V0Hn9LgIlfbha6w";
+import { getDistanceFromLatLonInKm } from '../util/DistanceCalculator';
+import ConfirmationBar from './guessMap/ConfirmationBar';
+import FailureSnackbar from './guessMap/FailureSnackbar';
+import SuccessSnackbar from './guessMap/SuccessSnackbar';
+import { mapStyle, onClickMap, registerAttempt } from './guessMap/Markers';
 
 const containerStyle = {
     height: '100%',
@@ -19,75 +19,6 @@ const center = {
     lat: 0,
     lng: -40
 };
-
-const mapStyle = [
-    {
-        "elementType": "labels",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "administrative",
-        "elementType": "geometry",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "administrative.land_parcel",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "administrative.neighborhood",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "poi",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "road",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "road",
-        "elementType": "labels.icon",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-        "featureType": "transit",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    }
-]
 
 const defaultMapOptions = {
     styles: mapStyle,
@@ -105,17 +36,6 @@ export default function GuessCountryMapScreen({ country, previousLevel, nextLeve
     const [showSuccess, setShowSuccess] = useState();
     const [showFailure, setShowFailure] = useState();
 
-    function onClick(mapMouseEvent) {
-        if (!victory) {
-            setUnconfirmedMarker({
-                lat: mapMouseEvent.latLng.lat(),
-                lng: mapMouseEvent.latLng.lng()
-            })
-
-            setShowConfirmation(true);
-        }
-    }
-
     function getCountryFromGeocode(geocode) {
         return geocode.results[0].address_components.find(address => address.types?.includes("country"));
     }
@@ -124,43 +44,8 @@ export default function GuessCountryMapScreen({ country, previousLevel, nextLeve
         return getDistanceFromLatLonInKm(country.lat, country.lon, unconfirmedMarker.lat, unconfirmedMarker.lng) < 200
     }
 
-    function registerAttempt() {
-        const bearingIcons = [
-            "m15 5-1.41 1.41L18.17 11H2v2h16.17l-4.59 4.59L15 19l7-7-7-7z",
-            "M19 9h-2v6.59L5.41 4 4 5.41 15.59 17H9v2h10V9z",
-            "m19 15-1.41-1.41L13 18.17V2h-2v16.17l-4.59-4.59L5 15l7 7 7-7z",
-            "M15 19v-2H8.41L20 5.41 18.59 4 7 15.59V9H5v10h10z",
-            "m9 19 1.41-1.41L5.83 13H22v-2H5.83l4.59-4.59L9 5l-7 7 7 7z",
-            "M5 15h2V8.41L18.59 20 20 18.59 8.41 7H15V5H5v10z",
-            "m5 9 1.41 1.41L11 5.83V22h2V5.83l4.59 4.59L19 9l-7-7-7 7z",
-            "M9 5v2h6.59L4 18.59 5.41 20 17 8.41V15h2V5H9z",
-            "m15 5-1.41 1.41L18.17 11H2v2h16.17l-4.59 4.59L15 19l7-7-7-7z"
-        ]
-
-        function getBearingIcon() {
-            let bearing = getBearingFromLatLon(unconfirmedMarker.lat, unconfirmedMarker.lng, country.lat, country.lon,);
-            return bearingIcons[Math.round(bearing / 45)];
-        }
-
-        setMarkers((previousMarkers) => [,
-            ...previousMarkers,
-            <Marker
-                key={unconfirmedMarker.lat + unconfirmedMarker.lng + previousMarkers.length}
-                position={{
-                    lat: unconfirmedMarker.lat,
-                    lng: unconfirmedMarker.lng
-                }}
-                icon={{
-                    path: getBearingIcon(),
-                    fillColor: "black",
-                    fillOpacity: 1,
-                }}
-            />
-        ]);
-    }
-
     function registerFailedAttempt() {
-        registerAttempt();
+        registerAttempt(setMarkers, unconfirmedMarker, country);
         setShowFailure(true);
         setShowConfirmation(false);
         setUnconfirmedMarker(null);
@@ -211,13 +96,13 @@ export default function GuessCountryMapScreen({ country, previousLevel, nextLeve
             <TopBar title="Level 2" previousLevel={previousLevel} nextLevel={nextLevel} />
 
             <LoadScript
-                googleMapsApiKey={apiKey}
+                googleMapsApiKey={"AIzaSyAC4obA_8hVx_SAzfc4V0Hn9LgIlfbha6w"}
             >
                 <GoogleMap
                     mapContainerStyle={containerStyle}
                     center={center}
                     zoom={2}
-                    onClick={onClick}
+                    onClick={event => onClickMap(event, victory, setUnconfirmedMarker, setShowConfirmation)}
                     options={defaultMapOptions}
                 >
                     {markers}
@@ -232,55 +117,24 @@ export default function GuessCountryMapScreen({ country, previousLevel, nextLeve
                 </GoogleMap>
             </LoadScript>
 
-            <Snackbar open={showSuccess}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                sx={{ paddingTop: 10 }}
-            >
-                <Alert severity="success">
-                    Well done! You found {country.name}
-                </Alert>
-            </Snackbar>
+            <SuccessSnackbar 
+                showSuccess={showSuccess}
+                place={country.name}
+            />
 
-            <Snackbar open={showFailure}
-                autoHideDuration={6000}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                sx={{ marginTop: 10 }}
-                onClose={() => setShowFailure(false)}
-            >
-                <Alert severity="error">
-                    Wrong! The arrow is a hint.
-                </Alert>
-            </Snackbar>
+            <FailureSnackbar 
+                showFailure={showFailure}
+                setShowFailure={setShowFailure}
+            />
 
             {victory ?
                 <BottomBar />
                 :
-                <AppBar position='static'
-                    color="secondary"
-                >
-                    <Toolbar
-                        onClick={onClickYes}
-                    >
-                        <Typography variant="h6"
-                            sx={{
-                                flexGrow: 1,
-                                textAlign: 'center'
-                            }}>
-                            {showConfirmation ?
-                                "Confirm guess"
-                                :
-                                "Can you point " + country.name + " on the map?"
-                            }
-                        </Typography>
-                        {showConfirmation ?
-                            <IconButton
-                                color="inherit">
-                                <CheckIcon />
-                            </IconButton>
-                            : null
-                        }
-                    </Toolbar>
-                </AppBar>
+                <ConfirmationBar
+                    onClickYes={onClickYes}
+                    showConfirmation={showConfirmation}
+                    place={country.name}
+                />
             }
 
         </Stack >

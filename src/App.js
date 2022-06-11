@@ -8,7 +8,7 @@ import { gameNumber } from './util/GameNumber'
 
 function App() {
 
-  const [level, setLevel] = useState(1);
+  const [level, setLevel] = useState(2);
 
   function nextLevel() {
     setLevel(level + 1);
