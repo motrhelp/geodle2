@@ -244,7 +244,7 @@ export default function GuessCountryMapScreen({ country, previousLevel, nextLeve
             <Snackbar open={showFailure}
                 autoHideDuration={6000}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                sx={{ paddingTop: 10 }}
+                sx={{ marginTop: 10 }}
                 onClose={() => setShowFailure(false)}
             >
                 <Alert severity="error">
@@ -255,11 +255,13 @@ export default function GuessCountryMapScreen({ country, previousLevel, nextLeve
             {victory ?
                 <BottomBar />
                 :
-                <AppBar position='static'>
+                <AppBar position='static'
+                    color="secondary"
+                >
                     <Toolbar
                         onClick={onClickYes}
                     >
-                        <Typography variant="h6" component="div"
+                        <Typography variant="h6"
                             sx={{
                                 flexGrow: 1,
                                 textAlign: 'center'

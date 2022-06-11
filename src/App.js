@@ -23,11 +23,11 @@ function App() {
     palette: {
       type: 'light',
       primary: {
-        main: '#ffffff',
+        main: '#000000'
       },
       secondary: {
-        main: '#dd2c00',
-      },
+        main: '#ffffff',
+      }
     },
   });
 

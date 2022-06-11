@@ -5,7 +5,10 @@ import ShareIcon from '@mui/icons-material/Share';
 
 export default function BottomBar() {
     return (
-        <AppBar position='static' sx={{ top: 'auto', bottom: 0 }}>
+        <AppBar position='static'
+            sx={{ top: 'auto', bottom: 0 }}
+            color="secondary"
+        >
             <Toolbar>
                 <IconButton
                     color="inherit"

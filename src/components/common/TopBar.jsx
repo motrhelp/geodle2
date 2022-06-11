@@ -9,8 +9,8 @@ export default function TopBar({ victory, title, previousLevel, nextLevel }) {
     };
 
     return (
-        <AppBar position="static">
-            <Toolbar >
+        <AppBar position="static" color="secondary">
+            <Toolbar>
                 {previousLevel ?
                     <IconButton
                         size="large"

@@ -51,9 +51,10 @@ export default function Input({ country, setGuesses, setVictory }) {
                 PopperComponent={PopperMy}
                 value={guessInput}
                 onChange={(event, newInput) => setGuessInput(newInput)}
+                color="secondary"
             />
             <Button
-                variant='contained'
+                variant='outlined'
                 onClick={onPressGuess}
             >
                 Guess
