@@ -9,13 +9,14 @@ import ConfirmationBar from './guessMap/ConfirmationBar';
 import FailureSnackbar from './guessMap/FailureSnackbar';
 import SuccessSnackbar from './guessMap/SuccessSnackbar';
 import { backendKey, frontendKey, mapStyle, onClickMap, registerAttempt } from './guessMap/Markers';
+import { useEffect } from 'react';
 
 const containerStyle = {
     height: '100%',
     width: '100%'
 };
 
-const center = {
+var center = {
     lat: 0,
     lng: -40
 };
@@ -27,7 +28,7 @@ const defaultMapOptions = {
 
 Geocode.setApiKey(backendKey);
 
-export default function GuessCountryMapScreen({ country, previousLevel, nextLevel }) {
+export default function GuessCapitalMapScreen({ country, previousLevel, nextLevel }) {
 
     const [markers, setMarkers] = useState([]);
     const [unconfirmedMarker, setUnconfirmedMarker] = useState();
@@ -35,17 +36,35 @@ export default function GuessCountryMapScreen({ country, previousLevel, nextLeve
     const [victory, setVictory] = useState();
     const [showSuccess, setShowSuccess] = useState();
     const [showFailure, setShowFailure] = useState();
+    const [capital, setCapital] = useState(country.capital);
 
-    function getCountryFromGeocode(geocode) {
-        return geocode.results[0].address_components.find(address => address.types?.includes("country"));
+    // Load locations
+    useEffect(() => {
+        center.lat = country.lat;
+        center.lng = country.lon;
+    
+        Geocode.fromAddress(capital.name).then(
+            (response) => {
+              const { lat, lng } = response.results[0].geometry.location;
+              capital.lat = lat;
+              capital.lon = lng;
+            },
+            (error) => {
+              console.error(error);
+            }
+          );
+    }, []);
+
+    function getCapitalFromGeocode(geocode) {
+        return geocode.results[0].address_components.find(address => address.types?.includes("locality"));
     }
 
-    function isCountryCloseToMarker() {
-        return getDistanceFromLatLonInKm(country.lat, country.lon, unconfirmedMarker.lat, unconfirmedMarker.lng) < 200
+    function isCapitalCloseToMarker() {
+        return getDistanceFromLatLonInKm(capital.lat, capital.lon, unconfirmedMarker.lat, unconfirmedMarker.lng) < 20
     }
 
     function registerFailedAttempt() {
-        registerAttempt(setMarkers, unconfirmedMarker, country);
+        registerAttempt(setMarkers, unconfirmedMarker, capital);
         setShowFailure(true);
         setShowConfirmation(false);
         setUnconfirmedMarker(null);
@@ -58,29 +77,12 @@ export default function GuessCountryMapScreen({ country, previousLevel, nextLeve
     }
 
     function onClickYes() {
-        Geocode.fromLatLng(unconfirmedMarker.lat, unconfirmedMarker.lng).then(
-            (response) => {
-                let countryFromGeocode = getCountryFromGeocode(response);
-                if (countryFromGeocode != undefined) {
-                    if (country.code === countryFromGeocode.short_name) {
-                        registerSuccessfulAttempt();
-                    } else {
-                        registerFailedAttempt();
-                    }
-                }
-                // Workaround for disputed territories
-                else if (isCountryCloseToMarker()) {
-                    registerSuccessfulAttempt();
-                } else {
-                    registerFailedAttempt();
-                }
-            },
-            (error) => {
-                console.error(error);
-            }
-        );
+        if (isCapitalCloseToMarker()) {
+            registerSuccessfulAttempt();
+        } else {
+            registerFailedAttempt();
+        }
     }
-
     function onClickNo() {
         setShowConfirmation(false);
         setUnconfirmedMarker(null);
@@ -99,7 +101,7 @@ export default function GuessCountryMapScreen({ country, previousLevel, nextLeve
             }}
             dispay='flex'
         >
-            <TopBar title="Level 2" victory={victory} previousLevel={previousLevel} nextLevel={nextLevel} />
+            <TopBar title="Level 3" victory={victory} previousLevel={previousLevel} nextLevel={nextLevel} />
 
             <LoadScript
                 googleMapsApiKey={frontendKey}
@@ -107,7 +109,7 @@ export default function GuessCountryMapScreen({ country, previousLevel, nextLeve
                 <GoogleMap
                     mapContainerStyle={containerStyle}
                     center={center}
-                    zoom={2}
+                    zoom={4}
                     onClick={event => onClickMap(event, victory, setUnconfirmedMarker, setShowConfirmation)}
                     options={defaultMapOptions}
                 >
@@ -125,7 +127,7 @@ export default function GuessCountryMapScreen({ country, previousLevel, nextLeve
 
             <SuccessSnackbar
                 showSuccess={showSuccess}
-                place={country.name}
+                place={country.capital.name}
             />
 
             <FailureSnackbar
@@ -140,7 +142,7 @@ export default function GuessCountryMapScreen({ country, previousLevel, nextLeve
                     onClickYes={onClickYes}
                     onClickNo={onClickNo}
                     showConfirmation={showConfirmation}
-                    place={country.name}
+                    place={country.capital.name}
                 />
             }
 

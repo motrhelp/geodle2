@@ -1,6 +1,9 @@
 import { Marker } from "@react-google-maps/api";
 import { getBearingFromLatLon } from "../../util/DistanceCalculator";
 
+export const backendKey = "AIzaSyCkW8j9YYfVVgyewb01H4JQUoc0f-OVotc";
+export const frontendKey = "AIzaSyAC4obA_8hVx_SAzfc4V0Hn9LgIlfbha6w";
+
 export const mapStyle = [
     {
         "elementType": "labels",
